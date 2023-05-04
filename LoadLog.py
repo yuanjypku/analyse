@@ -21,10 +21,11 @@ class SingleLog():
         else:
             sub_files = [sub for sub in path.iterdir() if sub.is_file()]
             sub_dirs = [sub for sub in path.iterdir() if sub.is_dir()]
+            
             assert len(sub_files) >=  1, f"no log in Single Log {self.name}"
-            assert len(sub_files) == len(sub_dirs) or len(sub_dirs) == 0, f"scalar log number cannot match hparam log number! In single log {self.name}"
-            if len(sub_files) > 1:
-                warnings.warn('More than one logs in the single log, the latest one choosed.')
+            warnings.warn(f"scalar and hparam log file number not same! In single log {self.name}. Might cause wrong scalar-hparam match!") if len(sub_files) != len(sub_dirs) and len(sub_dirs) != 0 else None
+            warnings.warn('More than one logs in the single log, the latest one choosed.') if len(sub_files) > 1 else None
+            
             self.scalar_path = sorted(sub_files)[-1] # choose the Latest 
             if len(sub_dirs) == 0:
                 self.mode = 'single_scalar'
